@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analiza pomiarow pogodowych</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            padding: 30px;
+        }
+
+        .kontener {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px #0002;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: gray;
+            cursor: not-allowed;
+        }
+
+        input {
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        pre {
+            background: #111827;
+            color: #a7f3d0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="kontener">
+
+    <h1>Analiza pomiarow pogodowych</h1>
+
+    <p>Wybierz plik z pomiarami (.txt):</p>
+
+    <input type="file" id="plik" accept=".txt">
+
+    <br>
+
+    <label>Temperatura progowa:</label>
+    <br>
+
+    <input type="number" id="prog" value="25">
+
+    <br>
+
+    <button id="analizuj" disabled onclick="analizuj()">
+        Analizuj pomiary
+    </button>
+
+    <p id="status">Ladowanie programu C++...</p>
+
+    <h2>Wyniki:</h2>
+
+    <pre id="wynik">Tutaj pojawia sie wyniki...</pre>
+
+</div>
+
+<script>
+    var Module = {
+        onRuntimeInitialized: function() {
+            document.getElementById("status").textContent =
+                "Program C++ gotowy!";
+
+            document.getElementById("analizuj").disabled = false;
+        }
+    };
+</script>
+
+<script src="pliki.js"></script>
+
+<script>
+    async function analizuj() {
+
+        const input = document.getElementById("plik");
+        const prog = Number(document.getElementById("prog").value);
+        const wynik = document.getElementById("wynik");
+
+        if (!input.files.length) {
+            alert("Najpierw wybierz plik!");
+            return;
+        }
+
+        const plik = input.files[0];
+
+        try {
+            const tekst = await plik.text();
+
+            const rezultat = Module.ccall(
+                "przetworzDane",
+                "string",
+                ["string", "number"],
+                [tekst, prog]
+            );
+
+            wynik.textContent = rezultat;
+
+        } catch (error) {
+            wynik.textContent = "Blad: " + error;
+        }
+    }
+</script>
+
+</body>
+</html>
