@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1793793286 source:c:\users\admin\desktop\jk\pliki\main.cpp
+	<iostream>
+	<fstream>
+	<sstream>
+	<vector>
+	<string>
+	<stdexcept>
+
